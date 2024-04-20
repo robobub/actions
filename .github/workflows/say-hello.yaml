@@ -2,11 +2,10 @@ name: Say Hello
 
 on:
   workflow_dispatch:
-  # schedule:
-  #   # At 17:38
-  #   - cron: "38 17 * * *"
-  #   # At 5:13
-  #   - cron: "13 5 * * *"
+
+  repository_dispatch:
+    types:
+      - say-hello
 
 jobs:
   say_hello:
