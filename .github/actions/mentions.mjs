@@ -1,14 +1,5 @@
 // @ts-check
 
-const MESSAGES = [
-  'Hello! 👋🏼',
-  'Hi! 👋🏼',
-  'Hey! 👋🏼',
-  'Howdy! 👋🏼',
-  'Yo! 👋🏼',
-  'Hi there! 👋🏼',
-]
-
 /**
  * @typedef {import('../../async-function').AsyncFunctionArguments} AsyncFunctionArguments
  */
@@ -42,8 +33,7 @@ async function removeNotification(github, threadId) {
 
 /** @param {AsyncFunctionArguments} AsyncFunctionArguments */
 export default async ({ core, github }) => {
-  core.debug('running say-hello action')
-  core.info('Hello, World!')
+  core.info('running mentions action')
 
   const { data: notifications } = await github.request('GET /notifications')
 
@@ -64,34 +54,38 @@ export default async ({ core, github }) => {
   await Promise.all((mentions).map(async (mention) => {
     await removeNotification(github, +mention.id)
 
-    if (!mention.subject.url) {
-      console.error('No mention subject URL found')
-      return
-    }
+    core.info(`Mention from ${mention.repository.full_name}`)
+    core.info(JSON.stringify(mention, null, 2))
+    core.info('\n\n-----\n\n')
 
-    const splittedUrl = mention.subject.url.split('/')
+    // if (!mention.subject.url) {
+    //   console.error('No mention subject URL found')
+    //   return
+    // }
 
-    if (!splittedUrl.pop()) {
-      console.error('No issue number found')
-      return
-    }
+    // const splittedUrl = mention.subject.url.split('/')
 
-    const issueNumber = +(splittedUrl.pop() ?? 0)
+    // if (!splittedUrl.pop()) {
+    //   console.error('No issue number found')
+    //   return
+    // }
 
-    const { data: createdComment } = await github.request(
-      'POST /repos/{owner}/{repo}/issues/{issue_number}/comments',
-      {
-        owner: mention.repository.owner.login,
-        repo: mention.repository.name,
-        issue_number: issueNumber,
-        body: MESSAGES[Math.floor(Math.random() * MESSAGES.length)] || 'Hmmm, this is rare. I don\'t know what to say.',
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28',
-        },
-      },
-    )
-    if (!createdComment) {
-      console.error('Something went wrong while trying to create a comment!')
-    }
+    // const issueNumber = +(splittedUrl.pop() ?? 0)
+
+    // const { data: createdComment } = await github.request(
+    //   'POST /repos/{owner}/{repo}/issues/{issue_number}/comments',
+    //   {
+    //     owner: mention.repository.owner.login,
+    //     repo: mention.repository.name,
+    //     issue_number: issueNumber,
+    //     body: MESSAGES[Math.floor(Math.random() * MESSAGES.length)] || 'Hmmm, this is rare. I don\'t know what to say.',
+    //     headers: {
+    //       'X-GitHub-Api-Version': '2022-11-28',
+    //     },
+    //   },
+    // )
+    // if (!createdComment) {
+    //   console.error('Something went wrong while trying to create a comment!')
+    // }
   }))
 }

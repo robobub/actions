@@ -5,7 +5,7 @@ on:
 
   repository_dispatch:
     types:
-      - say-hello
+      - mention
 
 jobs:
   say_hello:
@@ -24,5 +24,5 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
-            const { default: script } = await import('${{ github.workspace }}/.github/actions/say-hello.mjs');
+            const { default: script } = await import('${{ github.workspace }}/.github/actions/mentions.mjs');
             return await script({ github, context, core, exec, glob, io, fetch, __original_require__ });
