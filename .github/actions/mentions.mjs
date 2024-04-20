@@ -14,15 +14,37 @@ const MESSAGES = [
 ]
 
 /**
- * @type {Array<{name: string, command: RegExp, action: (ctx: AsyncFunctionArguments) => Promise<void>}>}
+ * @type {Array<{name: string, command: RegExp, action: <T>(ctx: AsyncFunctionArguments, mention: T) => Promise<void>}>}
  */
 const COMMANDS = [
   {
     name: 'release',
     command: /release/,
-    async action() {
+    async action({ github, core }, mention) {
       // eslint-disable-next-line no-console
       console.log('release command')
+
+      // @ts-expect-error this is a test
+      const issueNumber = +(mention.subject.url.split('/').pop() ?? 0)
+
+      // if no command is found, will just say hallo to the user
+      const { data: createdComment } = await github.request(
+        'POST /repos/{owner}/{repo}/issues/{issue_number}/comments',
+        {
+          // @ts-expect-error this is a tet
+          owner: mention.repository.owner.login,
+          // @ts-expect-error this is a tet
+          repo: mention.repository.name,
+          issue_number: issueNumber,
+          body: MESSAGES[Math.floor(Math.random() * MESSAGES.length)] || 'Hmmm, this is rare. I don\'t know what to say.',
+          headers: {
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+        },
+      )
+      if (!createdComment) {
+        core.setFailed('something went wrong while trying to say hello!')
+      }
     },
   },
 ]
@@ -133,7 +155,7 @@ export default async ({
         glob,
         io,
         require,
-      })
+      }, mention)
       core.info('command executed')
     } catch (err) {
       core.setFailed(`command ${command.name} failed to execute`)
