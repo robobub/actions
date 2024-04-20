@@ -22,7 +22,6 @@
   },
   "devDependencies": {
     "@luxass/eslint-config": "^4.4.0",
-    "@types/github-script": "github:actions/github-script",
     "@types/node": "^20.12.7",
     "eslint": "^9.1.0",
     "typescript": "^5.4.5"
