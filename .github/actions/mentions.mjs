@@ -52,7 +52,7 @@ export default async ({ core, github }) => {
   }
 
   await Promise.all((mentions).map(async (mention) => {
-    await removeNotification(github, +mention.id)
+    // await removeNotification(github, +mention.id)
 
     core.info(`Mention from ${mention.repository.full_name}`)
     core.info(JSON.stringify(mention, null, 2))
