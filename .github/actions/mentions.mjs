@@ -100,7 +100,7 @@ export default async ({
 
     core.info(`comment body: ${body}`)
 
-    const command = COMMANDS.find(({ command }) => command.test(body))
+    const command = comment.user?.login === 'luxass' ? COMMANDS.find(({ command }) => command.test(body)) : null
 
     if (!command) {
       // if no command is found, will just say hallo to the user
