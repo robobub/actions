@@ -8,29 +8,6 @@
  * @typedef {AsyncFunctionArguments["github"]} GitHub
  */
 
-/**
- * @param {GitHub} github
- * @param {number} threadId
- */
-async function removeNotification(github, threadId) {
-  try {
-    await github.request('PATCH /notifications/threads/{thread_id}', {
-      thread_id: threadId,
-    })
-    await github.request(
-      'PUT /notifications/threads/{thread_id}/subscription',
-      {
-        thread_id: threadId,
-        ignored: true,
-      },
-    )
-
-    return true
-  } catch (e) {
-    return false
-  }
-}
-
 /** @param {AsyncFunctionArguments} AsyncFunctionArguments */
 export default async ({ core, github }) => {
   core.info('running mentions action')
@@ -59,11 +36,6 @@ export default async ({ core, github }) => {
     core.info('\n\n-----\n\n')
 
     const splittedCommentUrl = mention.subject.latest_comment_url.split('/')
-
-    if (!splittedCommentUrl.pop()) {
-      console.error('No comment id found')
-      return
-    }
 
     const commentId = +(splittedCommentUrl.pop() ?? 0)
 
