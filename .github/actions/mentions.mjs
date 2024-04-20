@@ -58,19 +58,25 @@ export default async ({ core, github }) => {
     core.info(JSON.stringify(mention, null, 2))
     core.info('\n\n-----\n\n')
 
-    // if (!mention.subject.url) {
-    //   console.error('No mention subject URL found')
-    //   return
-    // }
+    const splittedCommentUrl = mention.subject.url.split('/')
 
-    // const splittedUrl = mention.subject.url.split('/')
+    if (!splittedCommentUrl.pop()) {
+      console.error('No comment id found')
+      return
+    }
 
-    // if (!splittedUrl.pop()) {
-    //   console.error('No issue number found')
-    //   return
-    // }
+    const commentId = +(splittedCommentUrl.pop() ?? 0)
 
-    // const issueNumber = +(splittedUrl.pop() ?? 0)
+    // get comment from mention
+    const { data: comment } = await github.request('GET /repos/{owner}/{repo}/issues/comments/{comment_id}', {
+      owner: mention.repository.owner.login,
+      repo: mention.repository.name,
+      comment_id: commentId,
+    })
+
+    const body = comment.body || ''
+
+    core.debug(`comment body: ${body}`)
 
     // const { data: createdComment } = await github.request(
     //   'POST /repos/{owner}/{repo}/issues/{issue_number}/comments',
