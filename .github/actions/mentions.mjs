@@ -48,7 +48,7 @@ export default async ({ core, github }) => {
 
     const body = comment.body || ''
 
-    core.debug(`comment body: ${body}`)
+    core.info(`comment body: ${body}`)
 
     // const { data: createdComment } = await github.request(
     //   'POST /repos/{owner}/{repo}/issues/{issue_number}/comments',
