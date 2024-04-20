@@ -26,3 +26,4 @@ jobs:
           script: |
             const { default: script } = await import('${{ github.workspace }}/.github/actions/mentions.mjs');
             return await script({ github, context, core, exec, glob, io, fetch, __original_require__ });
+          github-token: ${{ secrets.ROBOBUB_GITHUB_TOKEN }}
