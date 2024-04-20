@@ -58,7 +58,7 @@ export default async ({ core, github }) => {
     core.info(JSON.stringify(mention, null, 2))
     core.info('\n\n-----\n\n')
 
-    const splittedCommentUrl = mention.subject.url.split('/')
+    const splittedCommentUrl = mention.subject.latest_comment_url.split('/')
 
     if (!splittedCommentUrl.pop()) {
       console.error('No comment id found')
