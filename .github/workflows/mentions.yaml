@@ -8,8 +8,9 @@ on:
       - mention
 
 jobs:
-  say_hello:
+  mentions:
     runs-on: ubuntu-latest
+    name: Mentions
     steps:
       - uses: actions/checkout@v4
 
