@@ -174,6 +174,7 @@ export default async ({
       }, mention)
       core.info('command executed')
     } catch (err) {
+      core.error(err)
       core.setFailed(`command ${command.name} failed to execute`)
     }
   }))
