@@ -1,4 +1,4 @@
-name: Say Hello
+name: Mentions
 
 on:
   workflow_dispatch:
