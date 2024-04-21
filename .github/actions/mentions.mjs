@@ -1,5 +1,7 @@
 // @ts-check
 
+import { inc } from 'semver'
+
 /**
  * @typedef {import('../../async-function').AsyncFunctionArguments} AsyncFunctionArguments
  */
@@ -27,6 +29,20 @@ const COMMANDS = [
       // @ts-expect-error this is a test
       const issueNumber = +(mention.subject.url.split('/').pop() ?? 0)
 
+      // read the current version of the package.json in root
+      const { data: packageJson } = await github.request('GET /repos/{owner}/{repo}/contents/{path}', {
+        // @ts-expect-error this is a tet
+        owner: mention.repository.owner.login,
+        // @ts-expect-error this is a tet
+        repo: mention.repository.name,
+        path: 'package.json',
+      })
+
+      // parse the content of the package.json
+      // @ts-expect-error aaa
+      // eslint-disable-next-line node/prefer-global/buffer
+      const packageJsonContent = Buffer.from(packageJson.content, 'base64').toString('utf-8')
+
       // if no command is found, will just say hallo to the user
       const { data: createdComment } = await github.request(
         'POST /repos/{owner}/{repo}/issues/{issue_number}/comments',
@@ -36,7 +52,7 @@ const COMMANDS = [
           // @ts-expect-error this is a tet
           repo: mention.repository.name,
           issue_number: issueNumber,
-          body: MESSAGES[Math.floor(Math.random() * MESSAGES.length)] || 'Hmmm, this is rare. I don\'t know what to say.',
+          body: `I will release it soon: current version ${JSON.parse(packageJsonContent).version} -> ${inc(JSON.parse(packageJsonContent).version, 'patch')}`,
           headers: {
             'X-GitHub-Api-Version': '2022-11-28',
           },
