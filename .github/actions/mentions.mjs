@@ -14,12 +14,12 @@ const MESSAGES = [
 ]
 
 /**
- * @type {Array<{name: string, command: RegExp, action: <T>(ctx: AsyncFunctionArguments, mention: T) => Promise<void>}>}
+ * @type {Array<{name: string, command: RegExp[], action: <T>(ctx: AsyncFunctionArguments, mention: T) => Promise<void>}>}
  */
 const COMMANDS = [
   {
     name: 'release',
-    command: /release/,
+    command: [/release/, /release it/],
     async action({ github, core }, mention) {
       // eslint-disable-next-line no-console
       console.log('release command')
@@ -122,7 +122,7 @@ export default async ({
 
     core.info(`comment body: ${body}`)
 
-    const command = comment.user?.login === 'luxass' ? COMMANDS.find(({ command }) => command.test(body)) : null
+    const command = comment.user?.login === 'luxass' ? COMMANDS.find(({ command }) => command.find((reg) => reg.test(body))) : null
 
     if (!command) {
       // if no command is found, will just say hallo to the user
