@@ -65,6 +65,9 @@ export default {
 
     const cron = CRONS.get(trigger)!
 
+    // eslint-disable-next-line no-console
+    console.info(`Running cronjob ${trigger}`)
+
     const octokit = new $Octokit({
       auth: env.GITHUB_TOKEN,
     })
