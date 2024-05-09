@@ -15,11 +15,13 @@
   "dependencies": {
     "@octokit/core": "^6.1.2",
     "@octokit/plugin-paginate-rest": "^11.3.0",
-    "hono": "^4.3.3"
+    "hono": "^4.3.3",
+    "semver": "^7.6.1"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240502.0",
     "@luxass/eslint-config": "^4.4.3",
+    "@types/semver": "^7.5.8",
     "eslint": "^9.2.0",
     "typescript": "^5.4.5",
     "vitest": "^1.6.0",

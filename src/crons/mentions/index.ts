@@ -129,6 +129,7 @@ export default {
         octokit,
         args,
         env,
+        mention,
       })
     })))
   },

@@ -28,17 +28,19 @@ export interface Cronjob {
   handler: Cronhandler
 }
 
-export interface CommandContext {
+export type CommandContext<TData = Record<string, unknown>> = {
   octokit: Octokit
   args: Record<string, string | boolean | number | undefined>
   env: Env
-}
+} & TData
 
-export interface SlashCommand {
+export interface SlashCommand<TData = Record<string, unknown>> {
   command: string
   args?: Record<string, SlashCommandArg>
-  handler: (ctx: CommandContext) => void | Promise<void>
+  handler: (ctx: CommandContext<TData>) => void | Promise<void>
 }
+
+export interface MentionSlashCommand extends SlashCommand<{ mention: GitHubMention }> {}
 
 export interface SlashCommandArg {
   type: 'string' | 'boolean' | 'number'
