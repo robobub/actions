@@ -20,7 +20,7 @@ export function tokenize(command: string): string[] {
 
 export interface ParseResult {
   command: string
-  args: Record<string, string>
+  args: Record<string, string | number | boolean | undefined>
 }
 
 export function parse(tokens: string[], args: Record<string, SlashCommandArg>): ParseResult | null {
@@ -43,11 +43,6 @@ export function parse(tokens: string[], args: Record<string, SlashCommandArg>): 
     }
   }
 
-  console.log({
-    argWords,
-    args,
-  })
-
   if (argWords.length > 0) {
     payload.args._ = argWords.join(' ')
 
@@ -63,9 +58,6 @@ export function parse(tokens: string[], args: Record<string, SlashCommandArg>): 
     }
   }
 
-  console.info({
-    payload,
-  })
   return payload
 }
 

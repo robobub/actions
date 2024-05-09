@@ -19,4 +19,4 @@ routes = [
 ]
 
 [triggers]
-crons = ["*/1 * * * *"]
+crons = [ "*/1 * * * *" ]

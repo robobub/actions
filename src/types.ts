@@ -30,7 +30,7 @@ export interface Cronjob {
 
 export interface CommandContext {
   octokit: Octokit
-  args: Record<string, string>
+  args: Record<string, string | boolean | number | undefined>
   env: Env
 }
 
