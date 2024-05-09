@@ -62,7 +62,7 @@ export default {
 
       let reactionId: number | null = null
 
-      if (firstLine.length > 2 || firstLine.charAt(0) === '/') {
+      if (firstLine.length > 2 && firstLine.charAt(0) === '/') {
         // eslint-disable-next-line no-console
         console.debug(
           'The first line of the comment is a valid slash command.',
