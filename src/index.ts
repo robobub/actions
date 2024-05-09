@@ -55,6 +55,7 @@ app.notFound(async () => {
 
 export default {
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+    if (env.ENVIRONMENT !== 'PRODUCTION') return
     const trigger = event.cron
 
     if (!CRONS.has(trigger)) {
