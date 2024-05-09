@@ -59,14 +59,11 @@ export default {
     const trigger = event.cron
 
     if (!CRONS.has(trigger)) {
-      throw new Error(`No cronjob found for trigger ${trigger}`)
+      console.error(`No cronjob found for trigger ${trigger}`)
+      return
     }
 
-    const cron = CRONS.get(trigger)
-
-    if (!cron) {
-      throw new Error(`No cronjob found for trigger ${trigger}`)
-    }
+    const cron = CRONS.get(trigger)!
 
     const octokit = new $Octokit({
       auth: env.GITHUB_TOKEN,
