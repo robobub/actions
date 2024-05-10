@@ -1,11 +1,25 @@
-import { parse, tokenize } from '../../commands/parser'
+import mri from 'mri'
 import type { Cronjob } from '../../types'
 import { addReaction, removeNotification, sayHello, swapReaction } from '../../utils'
-import { COMMANDS } from './commands'
+import { MENTION_ACTIONS } from './actions'
 
 const ALLOWED_RUNNERS = [
   'luxass',
 ]
+
+// Support escaped quotes within quotes. https://stackoverflow.com/a/5696141/11934042
+const TOKENISE_REGEX
+  = /\S+="[^"\\]*(?:\\.[^"\\]*)*"|"[^"\\]*(?:\\.[^"\\]*)*"|\S+/g
+
+function tokenize(command: string): string[] {
+  let matches
+  const output: string[] = []
+  // eslint-disable-next-line no-cond-assign
+  while ((matches = TOKENISE_REGEX.exec(command))) {
+    output.push(matches[0])
+  }
+  return output
+}
 
 export default {
   trigger: '*/1 * * * *',
@@ -91,9 +105,9 @@ export default {
       const tokenizedCommand = tokenize(firstLine.slice(1))
       // eslint-disable-next-line no-console
       console.debug(`command tokens: ${tokenizedCommand}`)
-      const slashCommand = Array.from(COMMANDS).find(({ command }) => command === tokenizedCommand[0])
+      const action = Array.from(MENTION_ACTIONS).find(({ command }) => command === tokenizedCommand[0])
 
-      if (!slashCommand) {
+      if (!action) {
         console.warn(`command ${tokenizedCommand[0]} not found`)
 
         reactionId = await swapReaction(octokit, {
@@ -107,25 +121,18 @@ export default {
         return
       }
 
-      const result = parse(tokenizedCommand, slashCommand.args || {})
-
-      if (result == null) {
-        console.warn(`failed to parse command ${tokenizedCommand[0]} with args ${tokenizedCommand.slice(1).join(' ')}`)
-        reactionId = await swapReaction(octokit, {
-          owner: mention.repository.owner.login,
-          repo: mention.repository.name,
-          commentId,
-          emoji: 'confused',
-          reactionId: reactionId ?? 0,
-        })
-
-        return
-      }
-
-      const { args } = result
+      const args = mri(tokenizedCommand.slice(1), {
+        ...action.options,
+        boolean: [
+          'debug',
+        ],
+        default: {
+          debug: false,
+        },
+      })
 
       try {
-        await slashCommand.handler({
+        await action.handler({
           octokit,
           args,
           env,

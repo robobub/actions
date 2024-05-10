@@ -1,9 +1,25 @@
-import { inc } from 'semver'
-import type { SlashCommand } from '../../../types'
+import { gt, inc } from 'semver'
+import type { Argv } from 'mri'
+import type { MentionAction } from '../types'
 
 export default {
   command: 'release',
-  async handler({ octokit, mention }) {
+  options: {
+    default: {
+      type: 'patch',
+    },
+  },
+  async handler({ octokit, mention, args }) {
+    if (args.type !== 'patch' && args.type !== 'minor' && args.type !== 'major') {
+      args.type = 'patch'
+    }
+
+    const {
+      debug,
+      type,
+      version,
+    } = args
+
     const issueNumber = +(mention.subject.url.split('/').pop() ?? 0)
 
     // read the current version of the package.json in root
@@ -22,7 +38,11 @@ export default {
 
     const packageName = packageJsonContent.name
     const currentVersion = packageJsonContent.version
-    const nextVersion = inc(currentVersion, 'patch')
+    let nextVersion = inc(currentVersion, type)
+
+    if (version && gt(version, currentVersion)) {
+      nextVersion = version
+    }
 
     if (!packageName || !currentVersion || !nextVersion) {
       throw new Error('failed to parse package.json')
@@ -49,6 +69,19 @@ export default {
       comment += `I'm going to try and create a release for this version soon. \n\nBumping package version from ${currentVersion} -> ${nextVersion}.`
     }
 
+    if (debug) {
+      const debug = createDebug()
+      debug.addSection('versions', JSON.stringify({
+        currentVersion,
+        nextVersion,
+        hasNextVersion,
+      }, null, 2), 'json')
+      debug.addSection('args', JSON.stringify(args, null, 2), 'json')
+      debug.addSection('package.json', JSON.stringify(packageJsonContent, null, 2), 'json')
+
+      comment += debug.build()
+    }
+
     // if no command is found, will just say hallo to the user
     const { data: createdComment } = await octokit.request(
       'POST /repos/{owner}/{repo}/issues/{issue_number}/comments',
@@ -66,4 +99,19 @@ export default {
       console.error(`failed to create comment for issue ${issueNumber}`)
     }
   },
-} satisfies SlashCommand
+} satisfies MentionAction
+
+function createDebug() {
+  let debug = '\n\n\n<details><summary>Debug</summary>'
+
+  return {
+    addSection(title: string, content: string, lang = 'json') {
+      debug += `\n\n### ${title}\n\n\`\`\`${lang}\n${content}\n\`\`\``
+    },
+    build() {
+      debug += '\n\n</details>'
+
+      return debug
+    },
+  }
+}
