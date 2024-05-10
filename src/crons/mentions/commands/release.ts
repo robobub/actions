@@ -1,5 +1,5 @@
 import { inc } from 'semver'
-import type { MentionSlashCommand } from '../../../types'
+import type { SlashCommand } from '../../../types'
 
 export default {
   command: 'release',
@@ -38,4 +38,4 @@ export default {
       console.error(`failed to create comment for issue ${issueNumber}`)
     }
   },
-} satisfies MentionSlashCommand
+} satisfies SlashCommand

@@ -1,8 +1,7 @@
-import { COMMANDS } from '../../commands'
 import { parse, tokenize } from '../../commands/parser'
 import type { Cronjob } from '../../types'
 import { addReaction, removeNotification, sayHello, swapReaction } from '../../utils'
-import './commands'
+import { COMMANDS } from './commands'
 
 const ALLOWED_RUNNERS = [
   'luxass',

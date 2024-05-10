@@ -16,6 +16,7 @@
     "@octokit/core": "^6.1.2",
     "@octokit/plugin-paginate-rest": "^11.3.0",
     "hono": "^4.3.3",
+    "mri": "^1.2.0",
     "semver": "^7.6.1"
   },
   "devDependencies": {
