@@ -96,7 +96,7 @@ export default {
       if (!slashCommand) {
         console.warn(`command ${tokenizedCommand[0]} not found`)
 
-        await swapReaction(octokit, {
+        reactionId = await swapReaction(octokit, {
           owner: mention.repository.owner.login,
           repo: mention.repository.name,
           commentId,
@@ -110,8 +110,8 @@ export default {
       const result = parse(tokenizedCommand, slashCommand.args || {})
 
       if (result == null) {
-        console.error('failed to parse command')
-        await swapReaction(octokit, {
+        console.warn(`failed to parse command ${tokenizedCommand[0]} with args ${tokenizedCommand.slice(1).join(' ')}`)
+        reactionId = await swapReaction(octokit, {
           owner: mention.repository.owner.login,
           repo: mention.repository.name,
           commentId,
@@ -124,12 +124,25 @@ export default {
 
       const { args } = result
 
-      await slashCommand.handler({
-        octokit,
-        args,
-        env,
-        mention,
-      })
+      try {
+        await slashCommand.handler({
+          octokit,
+          args,
+          env,
+          mention,
+        })
+        // eslint-disable-next-line no-console
+        console.info(`command ${tokenizedCommand[0]} executed successfully`)
+      } catch (err) {
+        console.error(`failed to execute command ${tokenizedCommand[0]}`, err)
+        await swapReaction(octokit, {
+          owner: mention.repository.owner.login,
+          repo: mention.repository.name,
+          commentId,
+          emoji: '-1',
+          reactionId: reactionId ?? 0,
+        })
+      }
     })))
   },
 } satisfies Cronjob
