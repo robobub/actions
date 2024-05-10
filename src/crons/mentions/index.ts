@@ -102,13 +102,13 @@ export default {
         firstLine,
       })
 
-      const tokenizedCommand = tokenize(firstLine.slice(1))
+      const tokenizedAction = tokenize(firstLine.slice(1))
       // eslint-disable-next-line no-console
-      console.debug(`command tokens: ${tokenizedCommand}`)
-      const action = Array.from(MENTION_ACTIONS).find(({ command }) => command === tokenizedCommand[0])
+      console.debug(`command tokens: ${tokenizedAction}`)
+      const action = Array.from(MENTION_ACTIONS).find(({ command }) => command === tokenizedAction[0])
 
       if (!action) {
-        console.warn(`command ${tokenizedCommand[0]} not found`)
+        console.warn(`action ${tokenizedAction[0]} not found`)
 
         reactionId = await swapReaction(octokit, {
           owner: mention.repository.owner.login,
@@ -121,7 +121,7 @@ export default {
         return
       }
 
-      const args = mri(tokenizedCommand.slice(1), {
+      const args = mri(tokenizedAction.slice(1), {
         ...action.options,
         boolean: [
           'debug',
@@ -139,9 +139,9 @@ export default {
           mention,
         })
         // eslint-disable-next-line no-console
-        console.info(`command ${tokenizedCommand[0]} executed successfully`)
+        console.info(`action ${tokenizedAction[0]} executed successfully`)
       } catch (err) {
-        console.error(`failed to execute command ${tokenizedCommand[0]}`, err)
+        console.error(`failed to execute action ${tokenizedAction[0]}`, err)
         await swapReaction(octokit, {
           owner: mention.repository.owner.login,
           repo: mention.repository.name,

@@ -9,8 +9,19 @@ export interface ActionContext {
 }
 
 export interface MentionAction {
+  /**
+   * The command to trigger the action.
+   */
   command: string
+
+  /**
+   * The MRI options to parse the command arguments.
+   */
   options?: MriOptions
+
+  /**
+   * The action handler.
+   */
   handler: (ctx: ActionContext) => void | Promise<void>
 }
 
