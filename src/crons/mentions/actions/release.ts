@@ -1,5 +1,4 @@
 import { gt, inc } from 'semver'
-import type { Argv } from 'mri'
 import type { MentionAction } from '../types'
 
 export default {
