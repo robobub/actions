@@ -1,4 +1,5 @@
-import type { GitHubMention, Octokit } from './types'
+import type { GitHubMention } from './crons/mentions/types'
+import type { Octokit } from './types'
 
 export async function removeNotification(octokit: Octokit, threadId: number): Promise<boolean> {
   try {
