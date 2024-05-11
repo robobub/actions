@@ -97,6 +97,22 @@ export default {
     if (!createdComment) {
       console.error(`failed to create comment for issue ${issueNumber}`)
     }
+
+    if (hasNextVersion) {
+      return
+    }
+
+    // merge this pull request,
+    const { data } = await octokit.request('PUT /repos/{owner}/{repo}/pulls/{pull_number}/merge', {
+      owner: mention.repository.owner.login,
+      repo: mention.repository.name,
+      pull_number: issueNumber,
+      merge_method: 'squash',
+      commit_title: `chore(release): ${nextVersion}`,
+      commit_message: `chore(release): ${nextVersion}`,
+    })
+
+    // if the version is not already published
   },
 } satisfies MentionAction
 

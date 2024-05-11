@@ -5,6 +5,8 @@ export interface HonoContext {
   Bindings: {
     GITHUB_TOKEN: string
     ENVIRONMENT: 'staging' | 'production'
+    ROBOBUB_STAGING: KVNamespace
+    ROBOBUB_PRODUCTION: KVNamespace
     WEBHOOK_SECRET: string
   }
 }

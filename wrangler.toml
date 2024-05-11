@@ -8,15 +8,21 @@ compatibility_date = "2023-08-20"
 vars = { ENVIRONMENT = "staging" }
 routes = [
   { pattern = "staging.robobub.luxass.dev", custom_domain = true },
-  { pattern = "staging.robobub.luxass.com", custom_domain = true }
+  { pattern = "staging.robobub.luxass.com", custom_domain = true },
+]
+kv_namespaces = [
+  { binding = "ROBOBUB_STAGING", id = "b0a8b9d4d6254d228e2fe40fcbadec11" },
 ]
 
 [env.production]
 vars = { ENVIRONMENT = "production" }
 routes = [
   { pattern = "robobub.luxass.dev", custom_domain = true },
-  { pattern = "robobub.luxass.com", custom_domain = true }
+  { pattern = "robobub.luxass.com", custom_domain = true },
+]
+kv_namespaces = [
+  { binding = "ROBOBUB_PRODUCTION", id = "2ac7130da38346a28b83dd586e1644d5" },
 ]
 
 [triggers]
-crons = [ "*/1 * * * *" ]
+crons = ["*/1 * * * *"]
