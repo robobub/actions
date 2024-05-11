@@ -7,6 +7,7 @@ export interface HonoContext {
     ENVIRONMENT: 'staging' | 'production'
     ROBOBUB_STAGING: KVNamespace
     ROBOBUB_PRODUCTION: KVNamespace
+    WEBHOOK_SECRET: string
   }
 }
 
