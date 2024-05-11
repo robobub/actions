@@ -54,7 +54,7 @@ app.post('/webhook', async (ctx) => {
   }
 
   return ctx.json({
-    message: 'payload was received successfully'
+    message: 'payload was received successfully',
   })
 })
 
