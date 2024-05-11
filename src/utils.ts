@@ -1,5 +1,5 @@
 import type { GitHubMention } from './crons/mentions/types'
-import type { Octokit } from './types'
+import type { Env, Octokit } from './types'
 
 export async function removeNotification(octokit: Octokit, threadId: number): Promise<boolean> {
   try {
@@ -126,4 +126,8 @@ export async function sayHello(octokit: Octokit, issueNumber: number, mention: G
   } catch (err) {
     console.error(err)
   }
+}
+
+export function getKV(env: Env): KVNamespace {
+  return env.ENVIRONMENT === 'production' ? env.ROBOBUB_PRODUCTION : env.ROBOBUB_STAGING
 }

@@ -8,24 +8,24 @@
   <link rel="icon" href="/favicon.ico">
 
   <!-- primary meta tags -->
-  <title>robobub | ${env.ENVIRONMENT}</title>
-  <meta name="title" content="robobub | ${env.ENVIRONMENT}">
+  <title>robobub | {{ ENVIRONMENT }}</title>
+  <meta name="title" content="robobub | {{ ENVIRONMENT }}">
   <meta name="description" content="A Cloudflare Worker which has some mysteries">
 
   <!-- open graph -->
   <meta property="og:type" content="website">
-  <meta property="og:site_name" content="${env.ENVIRONMENT === 'staging' ? 'staging.' : ''}robobub.luxass.dev">
-  <meta property="og:url" content="${url}">
-  <meta property="og:title" content="robobub | ${env.ENVIRONMENT}">
+  <meta property="og:site_name" content="{{ STRINGIFIED_ENVIRONMENT }}robobub.luxass.dev">
+  <meta property="og:url" content="{{ URL }}">
+  <meta property="og:title" content="robobub | {{ ENVIRONMENT }}">
   <meta property="og:description" content="A Cloudflare Worker which has some mysteries">
-  <meta property="og:image" content="${ogUrl}" />
+  <meta property="og:image" content="{{ OG_URL }}" />
 
   <!-- twitter -->
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="${url}">
-  <meta property="twitter:title" content="robobub | ${env.ENVIRONMENT}">
+  <meta property="twitter:url" content="{{ URL }}">
+  <meta property="twitter:title" content="robobub | {{ ENVIRONMENT }}">
   <meta property="twitter:description" content="A Cloudflare Worker which has some mysteries">
-  <meta property="twitter:image" content="${ogUrl}" />
+  <meta property="twitter:image" content="{{ OG_URL }}" />
   <style>
     *,
     :before,
