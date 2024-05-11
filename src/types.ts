@@ -4,7 +4,8 @@ import type { PaginateInterface } from '@octokit/plugin-paginate-rest'
 export interface HonoContext {
   Bindings: {
     GITHUB_TOKEN: string
-    ENVIRONMENT: string
+    ENVIRONMENT: 'staging' | 'production'
+    WEBHOOK_SECRET: string
   }
 }
 
