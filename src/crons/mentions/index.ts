@@ -1,97 +1,97 @@
-import mri from 'mri'
-import type { Cronjob } from '../../types'
-import { addReaction, removeNotification, sayHello, swapReaction } from '../../utils'
-import { MENTION_ACTIONS } from './actions'
+import mri from "mri";
+import type { Cronjob } from "../../types";
+import { addReaction, removeNotification, sayHello, swapReaction } from "../../utils";
+import { MENTION_ACTIONS } from "./actions";
 
 const ALLOWED_RUNNERS = [
-  'luxass',
-]
+  "luxass",
+];
 
 // Support escaped quotes within quotes. https://stackoverflow.com/a/5696141/11934042
 const TOKENISE_REGEX
-  = /\S+="[^"\\]*(?:\\.[^"\\]*)*"|"[^"\\]*(?:\\.[^"\\]*)*"|\S+/g
+  = /\S+="[^"\\]*(?:\\.[^"\\]*)*"|"[^"\\]*(?:\\.[^"\\]*)*"|\S+/g;
 
 function tokenize(command: string): string[] {
-  let matches
-  const output: string[] = []
+  let matches;
+  const output: string[] = [];
   // eslint-disable-next-line no-cond-assign
   while ((matches = TOKENISE_REGEX.exec(command))) {
-    output.push(matches[0])
+    output.push(matches[0]);
   }
-  return output
+  return output;
 }
 
 export default {
-  trigger: '*/1 * * * *',
+  trigger: "*/1 * * * *",
   async handler({ ctx, env, octokit }) {
-    const { data: notifications } = await octokit.request('GET /notifications')
+    const { data: notifications } = await octokit.request("GET /notifications");
 
     if (!notifications.length) {
       // eslint-disable-next-line no-console
-      console.debug('no notifications found')
-      return
+      console.debug("no notifications found");
+      return;
     }
 
     const mentions = notifications.filter((notification) => {
-      return notification.reason === 'mention'
-    })
+      return notification.reason === "mention";
+    });
 
     if (!mentions.length) {
       // eslint-disable-next-line no-console
-      console.debug('no mentions was found in notifications')
-      return
+      console.debug("no mentions was found in notifications");
+      return;
     }
 
     ctx.waitUntil(Promise.all((mentions).map(async (mention) => {
-      const removed = await removeNotification(octokit, +mention.id)
+      const removed = await removeNotification(octokit, +mention.id);
       if (!removed) {
-        console.error(`failed to remove notification ${mention.id}`)
+        console.error(`failed to remove notification ${mention.id}`);
       }
 
-      const issueNumber = +(mention.subject.url.split('/').pop() ?? 0)
-      const commentId = +(mention.subject.latest_comment_url.split('/').pop() ?? 0)
+      const issueNumber = +(mention.subject.url.split("/").pop() ?? 0);
+      const commentId = +(mention.subject.latest_comment_url.split("/").pop() ?? 0);
 
       // get comment from mention
-      const { data: comment } = await octokit.request('GET /repos/{owner}/{repo}/issues/comments/{comment_id}', {
+      const { data: comment } = await octokit.request("GET /repos/{owner}/{repo}/issues/comments/{comment_id}", {
         owner: mention.repository.owner.login,
         repo: mention.repository.name,
         comment_id: commentId,
-      })
+      });
 
-      const body = (comment.body || '').replace(/@[a-z0-9-]+/g, '').trim()
+      const body = (comment.body || "").replace(/@[a-z0-9-]+/g, "").trim();
 
       // eslint-disable-next-line no-console
-      console.info(`comment body: ${body}`)
+      console.info(`comment body: ${body}`);
 
       // if user is not allowed to run commands, will just say hello to the user
-      if (!ALLOWED_RUNNERS.includes(comment.user?.login ?? '')) {
+      if (!ALLOWED_RUNNERS.includes(comment.user?.login ?? "")) {
         // eslint-disable-next-line no-console
-        console.debug(`user ${comment.user?.login} is not allowed to run commands`)
-        return await sayHello(octokit, issueNumber, mention)
+        console.debug(`user ${comment.user?.login} is not allowed to run commands`);
+        return await sayHello(octokit, issueNumber, mention);
       }
 
-      const firstLine = body.split(/\r?\n/)[0].trim()
-      let isCommand = false
+      const firstLine = body.split(/\r?\n/)[0].trim();
+      let isCommand = false;
 
-      let reactionId: number | null = null
+      let reactionId: number | null = null;
 
-      if (firstLine.length > 2 && firstLine.charAt(0) === '/') {
+      if (firstLine.length > 2 && firstLine.charAt(0) === "/") {
         // eslint-disable-next-line no-console
         console.debug(
-          'The first line of the comment is a valid slash command.',
-        )
+          "The first line of the comment is a valid slash command.",
+        );
 
-        isCommand = true
+        isCommand = true;
         reactionId = await addReaction(octokit, {
           owner: mention.repository.owner.login,
           repo: mention.repository.name,
           commentId,
-          emoji: '+1',
-        })
+          emoji: "+1",
+        });
       }
 
       if (!isCommand) {
-        return await sayHello(octokit, issueNumber, mention)
+        return await sayHello(octokit, issueNumber, mention);
       }
 
       // eslint-disable-next-line no-console
@@ -100,36 +100,36 @@ export default {
         body,
         isCommand,
         firstLine,
-      })
+      });
 
-      const tokenizedAction = tokenize(firstLine.slice(1))
+      const tokenizedAction = tokenize(firstLine.slice(1));
       // eslint-disable-next-line no-console
-      console.debug(`command tokens: ${tokenizedAction}`)
-      const action = Array.from(MENTION_ACTIONS).find(({ command }) => command === tokenizedAction[0])
+      console.debug(`command tokens: ${tokenizedAction}`);
+      const action = Array.from(MENTION_ACTIONS).find(({ command }) => command === tokenizedAction[0]);
 
       if (!action) {
-        console.warn(`action ${tokenizedAction[0]} not found`)
+        console.warn(`action ${tokenizedAction[0]} not found`);
 
         reactionId = await swapReaction(octokit, {
           owner: mention.repository.owner.login,
           repo: mention.repository.name,
           commentId,
-          emoji: 'confused',
+          emoji: "confused",
           reactionId: reactionId ?? 0,
-        })
+        });
 
-        return
+        return;
       }
 
       const args = mri(tokenizedAction.slice(1), {
         ...action.options,
         boolean: [
-          'debug',
+          "debug",
         ],
         default: {
           debug: false,
         },
-      })
+      });
 
       try {
         await action.handler({
@@ -137,19 +137,19 @@ export default {
           args,
           env,
           mention,
-        })
+        });
         // eslint-disable-next-line no-console
-        console.info(`action ${tokenizedAction[0]} executed successfully`)
+        console.info(`action ${tokenizedAction[0]} executed successfully`);
       } catch (err) {
-        console.error(`failed to execute action ${tokenizedAction[0]}`, err)
+        console.error(`failed to execute action ${tokenizedAction[0]}`, err);
         await swapReaction(octokit, {
           owner: mention.repository.owner.login,
           repo: mention.repository.name,
           commentId,
-          emoji: '-1',
+          emoji: "-1",
           reactionId: reactionId ?? 0,
-        })
+        });
       }
-    })))
+    })));
   },
-} satisfies Cronjob
+} satisfies Cronjob;
