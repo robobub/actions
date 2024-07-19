@@ -30,34 +30,6 @@ app.get('/', async (ctx) => {
   return ctx.html(index)
 })
 
-app.post('/webhook', async (ctx) => {
-  if (!ctx.req.header('x-hub-signature-256')) {
-    return ctx.json({
-      message: 'missing signature',
-    }, {
-      status: 400,
-    })
-  }
-
-  const body = await ctx.req.json()
-
-  if (!verifySignature(
-    ctx.env.WEBHOOK_SECRET,
-    ctx.req.header('x-hub-signature-256')!,
-    body,
-  )) {
-    return ctx.json({
-      message: 'invalid signature',
-    }, {
-      status: 400,
-    })
-  }
-
-  return ctx.json({
-    message: 'payload was received successfully',
-  })
-})
-
 app.get('/favicon.ico', async (ctx) => {
   // return a random emoji as favicon
   return ctx.redirect('https://image.luxass.dev/api/image/random-emoji')
