@@ -59,22 +59,51 @@ export default {
         commentId,
       });
 
-      // get comment from mention
-      const { data: comment } = await octokit.request("GET /repos/{owner}/{repo}/issues/comments/{comment_id}", {
-        owner: mention.repository.owner.login,
-        repo: mention.repository.name,
-        comment_id: commentId,
-      });
+      let commentBody: string | undefined | null;
+      let commentUserLogin: string;
 
-      const body = (comment.body || "").replace(/@[a-z0-9-]+/g, "").trim();
+      // the last comment is the issue body
+      if (mention.subject.url === mention.subject.latest_comment_url) {
+        // get issue from mention
+        const { data: issue } = await octokit.request("GET /repos/{owner}/{repo}/issues/{issue_number}", {
+          owner: mention.repository.owner.login,
+          repo: mention.repository.name,
+          issue_number: issueNumber,
+        });
+
+        commentBody = issue.body;
+        if (!issue.user) {
+          throw new Error("issue.user is undefined");
+        }
+        commentUserLogin = issue.user!.login!;
+      } else {
+        // get comment from mention
+        const { data: comment } = await octokit.request("GET /repos/{owner}/{repo}/issues/comments/{comment_id}", {
+          owner: mention.repository.owner.login,
+          repo: mention.repository.name,
+          comment_id: commentId,
+        });
+
+        commentBody = comment.body;
+        if (!comment.user) {
+          throw new Error("comment.user is undefined");
+        }
+        commentUserLogin = comment.user!.login!;
+      }
+
+      if (commentUserLogin == null) {
+        throw new Error("no comment user login found");
+      }
+
+      const body = (commentBody || "").replace(/@[a-z0-9-]+/g, "").trim();
 
       // eslint-disable-next-line no-console
       console.info(`comment body: ${body}`);
 
       // if user is not allowed to run commands, will just say hello to the user
-      if (!ALLOWED_RUNNERS.includes(comment.user?.login ?? "")) {
+      if (!ALLOWED_RUNNERS.includes(commentUserLogin)) {
         // eslint-disable-next-line no-console
-        console.debug(`user ${comment.user?.login} is not allowed to run commands`);
+        console.debug(`user ${commentUserLogin} is not allowed to run commands`);
         return await sayHello(octokit, issueNumber, mention);
       }
 
@@ -104,7 +133,6 @@ export default {
 
       // eslint-disable-next-line no-console
       console.info({
-        comment,
         body,
         isCommand,
         firstLine,
