@@ -51,6 +51,12 @@ export default {
       const issueNumber = +(mention.subject.url.split("/").pop() ?? 0);
       const commentId = +(mention.subject.latest_comment_url.split("/").pop() ?? 0);
 
+      // eslint-disable-next-line no-console
+      console.info({
+        issueNumber,
+        commentId,
+      });
+
       // get comment from mention
       const { data: comment } = await octokit.request("GET /repos/{owner}/{repo}/issues/comments/{comment_id}", {
         owner: mention.repository.owner.login,
