@@ -53,7 +53,9 @@ export default {
 
       // eslint-disable-next-line no-console
       console.info({
+        subjectUrl: mention.subject.url,
         issueNumber,
+        commentUrl: mention.subject.latest_comment_url,
         commentId,
       });
 
