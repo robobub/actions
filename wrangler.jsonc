@@ -3,6 +3,7 @@
   "name": "robobub-actions",
   "main": "src/index.ts",
   "compatibility_date": "2025-03-13",
+  "preview_urls": false,
   "observability": {
     "logs": {
       "enabled": true
