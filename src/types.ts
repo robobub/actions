@@ -2,7 +2,7 @@ import type { Octokit as _Octokit } from "@octokit/core";
 import type { PaginateInterface } from "@octokit/plugin-paginate-rest";
 
 export interface HonoContext {
-  Bindings: CloudflareBindings
+  Bindings: CloudflareBindings;
 }
 
 export type Octokit = _Octokit & {
