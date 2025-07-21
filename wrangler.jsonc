@@ -9,9 +9,6 @@
     },
     "enabled": true
   },
-  "vars": {
-    "GITHUB_TOKEN": null
-  },
   "placement": { "mode": "smart" },
   "routes": [
     {
