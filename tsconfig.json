@@ -7,6 +7,7 @@
     "resolveJsonModule": true,
     "types": [
       "./worker-configuration.d.ts",
+      "./index.d.ts",
       // for `cloudflare:test` types
       "@cloudflare/vitest-pool-workers"
     ],
@@ -16,5 +17,8 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "skipLibCheck": true
-  }
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
 }
