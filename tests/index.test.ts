@@ -9,7 +9,7 @@ import worker from "../src";
 it("respond with a 404", async () => {
   const request = new Request("https://unicode-proxy.ucdjs.dev/not-found");
   const ctx = createExecutionContext();
-  const response = await worker.fetch(request, env);
+  const response = await worker.fetch(request, env as CloudflareBindings);
   await waitOnExecutionContext(ctx);
 
   expect(response.status).toBe(404);

@@ -2,11 +2,7 @@ import type { Octokit as _Octokit } from "@octokit/core";
 import type { PaginateInterface } from "@octokit/plugin-paginate-rest";
 
 export interface HonoContext {
-  Bindings: {
-    GITHUB_TOKEN: string;
-    ENVIRONMENT: "staging" | "production";
-    WEBHOOK_SECRET: string;
-  };
+  Bindings: CloudflareBindings
 }
 
 export type Octokit = _Octokit & {
