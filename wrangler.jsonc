@@ -1,0 +1,28 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "robobub-actions",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-03-13",
+  "observability": {
+    "logs": {
+      "enabled": true
+    },
+    "enabled": true
+  },
+  "placement": { "mode": "smart" },
+  "routes": [
+    {
+      "pattern": "robobub.luxass.dev",
+      "custom_domain": true
+    },
+    {
+      "pattern": "robobub.luxass.com",
+      "custom_domain": true
+    }
+  ],
+  "triggers": {
+    "crons": [
+      "*/1 * * * *"
+    ]
+  }
+}

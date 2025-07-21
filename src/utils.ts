@@ -24,13 +24,13 @@ interface AddReactionOptions {
   repo: string;
   owner: string;
   emoji: | "+1"
-  | "-1"
-  | "laugh"
-  | "confused"
-  | "heart"
-  | "hooray"
-  | "rocket"
-  | "eyes";
+    | "-1"
+    | "laugh"
+    | "confused"
+    | "heart"
+    | "hooray"
+    | "rocket"
+    | "eyes";
   commentId: number;
 }
 

@@ -1,23 +1,21 @@
-import { unstable_dev } from "wrangler";
-import type { UnstableDevWorker } from "wrangler";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import {
+  createExecutionContext,
+  env,
+  waitOnExecutionContext,
+} from "cloudflare:test";
+import { expect, it } from "vitest";
+import worker from "../src";
 
-describe("worker", () => {
-  let worker: UnstableDevWorker;
+it("respond with a 404", async () => {
+  const request = new Request("https://unicode-proxy.ucdjs.dev/not-found");
+  const ctx = createExecutionContext();
+  const response = await worker.fetch(request, env);
+  await waitOnExecutionContext(ctx);
 
-  beforeAll(async () => {
-    worker = await unstable_dev("src/index.ts", {
-      experimental: { disableExperimentalWarning: true },
-    });
-  });
-
-  afterAll(async () => {
-    await worker.stop();
-  });
-
-  it("should return a html page", async () => {
-    const resp = await worker.fetch("/");
-    const text = await resp.text();
-    expect(text).toContain("mention me for a surprise 🐰");
+  expect(response.status).toBe(404);
+  expect(await response.json()).toEqual({
+    message: "Not Found",
+    status: 404,
+    timestamp: expect.any(String),
   });
 });

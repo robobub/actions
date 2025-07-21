@@ -1,3 +1,4 @@
+import type { Env, HonoContext } from "./types";
 import {
   Octokit,
 } from "@octokit/core";
@@ -5,12 +6,10 @@ import {
 import {
   paginateRest,
 } from "@octokit/plugin-paginate-rest";
-
 import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
 import { logger } from "hono/logger";
 import { prettyJSON } from "hono/pretty-json";
-import { HTTPException } from "hono/http-exception";
-import type { Env, HonoContext } from "./types";
 import indexPage from "./assets/index.html";
 import { CRONS } from "./crons";
 
@@ -21,40 +20,51 @@ app.use("*", logger());
 app.use(prettyJSON());
 
 app.get("/", async (ctx) => {
+  const url = new URL(ctx.req.url);
+
   const index = indexPage
-    .replaceAll("{{ ENVIRONMENT }}", ctx.env.ENVIRONMENT)
-    .replaceAll("{{ STRINGIFIED_ENVIRONMENT }}", ctx.env.ENVIRONMENT === "staging" ? "staging." : "")
-    .replaceAll("{{ URL }}", `https://${ctx.env.ENVIRONMENT === "staging" ? "staging." : ""}robobub.luxass.dev`)
-    .replaceAll("{{ OG_URL }}", `https://image.luxass.dev/api/image/random-emoji`);
+    .replaceAll("{{ URL }}", `https://${url.host}`)
+    .replaceAll("{{ OG_URL }}", `https://image.luxass.dev/api/image/emoji`);
   return ctx.html(index);
 });
 
 app.get("/favicon.ico", async (ctx) => {
   // return a random emoji as favicon
-  return ctx.redirect("https://image.luxass.dev/api/image/random-emoji");
+  return ctx.redirect("https://image.luxass.dev/api/image/emoji");
 });
 
 app.get("/view-source", (ctx) => {
   return ctx.redirect("https://github.com/robobub/actions");
 });
 
-app.onError(async (err, ctx) => {
+app.onError(async (err, c) => {
   console.error(err);
+  const url = new URL(c.req.url);
   if (err instanceof HTTPException) {
-    return err.getResponse();
+    return c.json({
+      path: url.pathname,
+      status: err.status,
+      message: err.message,
+      timestamp: new Date().toISOString(),
+    }, err.status);
   }
 
-  const message = ctx.env.ENVIRONMENT === "production" ? "Internal server error" : err.stack;
-  console.error(err);
-  return new Response(message, {
+  return c.json({
+    path: url.pathname,
     status: 500,
-  });
+    message: "Internal server error",
+    timestamp: new Date().toISOString(),
+  }, 500);
 });
 
-app.notFound(async () => {
-  return new Response("Not found", {
+app.notFound(async (c) => {
+  const url = new URL(c.req.url);
+  return c.json({
+    path: url.pathname,
     status: 404,
-  });
+    message: "Not found",
+    timestamp: new Date().toISOString(),
+  }, 404);
 });
 
 export default {
