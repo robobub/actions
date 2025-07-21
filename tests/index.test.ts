@@ -7,7 +7,7 @@ import { expect, it } from "vitest";
 import worker from "../src";
 
 it("respond with a 404", async () => {
-  const request = new Request("https://unicode-proxy.ucdjs.dev/not-found");
+  const request = new Request("https://robobub.luxass.dev/not-found");
   const ctx = createExecutionContext();
   const response = await worker.fetch(request, env as CloudflareBindings);
   await waitOnExecutionContext(ctx);
