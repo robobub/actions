@@ -8,16 +8,12 @@ import {
 } from "@octokit/plugin-paginate-rest";
 import { Hono } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { logger } from "hono/logger";
-import { prettyJSON } from "hono/pretty-json";
 import indexPage from "./assets/index.html";
 import { CRONS } from "./crons";
 
 const $Octokit = Octokit.plugin(paginateRest);
 
 const app = new Hono<HonoContext>();
-app.use("*", logger());
-app.use(prettyJSON());
 
 app.get("/", async (ctx) => {
   const url = new URL(ctx.req.url);
