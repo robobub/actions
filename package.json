@@ -1,8 +1,8 @@
 {
-  "name": "robobub-actions.worker",
+  "name": "@robobub/worker",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.22.0",
   "scripts": {
     "dev": "wrangler dev",
     "build": "wrangler deploy --dry-run --outdir=dist",
@@ -14,21 +14,21 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@octokit/core": "^6.1.6",
-    "@octokit/plugin-paginate-rest": "^13.1.1",
-    "hono": "^4.8.5",
-    "mri": "^1.2.0",
-    "semver": "^7.7.2"
+    "@octokit/core": "7.0.6",
+    "@octokit/plugin-paginate-rest": "14.0.0",
+    "hono": "4.10.6",
+    "mri": "1.2.0",
+    "semver": "7.7.3"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.8.55",
-    "@cloudflare/workers-types": "^4.20250719.0",
-    "@luxass/eslint-config": "^5.1.1",
-    "@types/semver": "^7.7.0",
-    "eslint": "^9.31.0",
-    "eslint-plugin-format": "^1.0.1",
-    "typescript": "^5.8.3",
-    "vitest": "^3.2.4",
-    "wrangler": "^4.25.0"
+    "@cloudflare/vitest-pool-workers": "0.10.7",
+    "@cloudflare/workers-types": "4.20251115.0",
+    "@luxass/eslint-config": "6.0.3",
+    "@types/semver": "7.7.1",
+    "eslint": "9.39.1",
+    "eslint-plugin-format": "1.0.2",
+    "typescript": "5.9.3",
+    "vitest": "4.0.9",
+    "wrangler": "4.47.0"
   }
 }
