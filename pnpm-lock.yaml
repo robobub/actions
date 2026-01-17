@@ -15,8 +15,8 @@ importers:
         specifier: 14.0.0
         version: 14.0.0(@octokit/core@7.0.6)
       hono:
-        specifier: 4.10.6
-        version: 4.10.6
+        specifier: 4.11.4
+        version: 4.11.4
       mri:
         specifier: 1.2.0
         version: 1.2.0
@@ -1640,8 +1640,8 @@ packages:
     resolution: {integrity: sha512-EykJT/Q1KjTWctppgIAgfSO0tKVuZUjhgMr17kqTumMl6Afv3EISleU7qZUzoXDFTAHTDC4NOoG/ZxU3EvlMPQ==}
     engines: {node: '>=8'}
 
-  hono@4.10.6:
-    resolution: {integrity: sha512-BIdolzGpDO9MQ4nu3AUuDwHZZ+KViNm+EZ75Ae55eMXMqLVhDFqEMXxtUe9Qh8hjL+pIna/frs2j6Y2yD5Ua/g==}
+  hono@4.11.4:
+    resolution: {integrity: sha512-U7tt8JsyrxSRKspfhtLET79pU8K+tInj5QZXs1jSugO1Vq5dFj3kmZsRldo29mTBfcjDRVRXrEZ6LS63Cog9ZA==}
     engines: {node: '>=16.9.0'}
 
   html-entities@2.6.0:
@@ -3960,7 +3960,7 @@ snapshots:
 
   has-flag@4.0.0: {}
 
-  hono@4.10.6: {}
+  hono@4.11.4: {}
 
   html-entities@2.6.0: {}
 
