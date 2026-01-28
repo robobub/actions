@@ -16,7 +16,7 @@
   "dependencies": {
     "@octokit/core": "7.0.6",
     "@octokit/plugin-paginate-rest": "14.0.0",
-    "hono": "4.11.4",
+    "hono": "4.11.7",
     "mri": "1.2.0",
     "semver": "7.7.3"
   },
