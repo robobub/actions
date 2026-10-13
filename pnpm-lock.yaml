@@ -108,6 +108,7 @@ packages:
 
   '@cloudflare/vitest-pool-workers@0.10.7':
     resolution: {integrity: sha512-SICwPsr83CkYLyjUhDLWk7DDav72Mc6tTJuZba4dv2+RLT+fONjYWnaziHMQN6AV0l4Xv3iyd6iu+/0UHZGjVQ==}
+    deprecated: '@cloudflare/vitest-pool-workers has been renamed to @cloudflare/vitest-plugin. This package will not receive future updates.'
     peerDependencies:
       '@vitest/runner': 2.0.x - 3.2.x
       '@vitest/snapshot': 2.0.x - 3.2.x
@@ -1864,6 +1865,7 @@ packages:
   eslint@9.39.1:
     resolution: {integrity: sha512-BhHmn2yNOFA9H9JmmIVKJmd288g9hrVRDkdoIgRCRuSySRUHH7r/DI6aAXW9T1WwUuY3DFgrcaqB+deURBLR5g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
     peerDependencies:
       jiti: '*'
